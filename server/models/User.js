@@ -1,0 +1,33 @@
+const db = require("../db/connect");
+
+class User {
+  constructor({ student_id, firstName, lastName, student_login, password }) {
+    (this.student_id = student_id),
+      (this.firstName = firstName),
+      (this.lastName = lastName),
+      (this.student_login = student_login),
+      (this.password = password);
+  }
+
+  static async getOneById(id) {
+    const response = await db.query(
+      "SELECT * FROM students WHERE student_id = $1;",
+      [id]
+    );
+    if (response.rows.length != 1) {
+      throw new Error("Student does not exist!");
+    }
+    return new User(response.rows[0]);
+  }
+
+  static async create(data) {
+    const { firstName, lastName, student_login, password } = data;
+    const response = db.query(
+      "INSERT INTO students (firstName, lastName, student_login, password) VALUES ($1, $2, $3, $4) RETURNING *;",
+      [firstName, lastName, student_login, password]
+    );
+    return response.rows[0];
+  }
+}
+
+module.exports = User;
