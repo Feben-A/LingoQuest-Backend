@@ -46,7 +46,6 @@ class User {
       "INSERT INTO students (firstName, lastName, student_login, password) VALUES ($1, $2, $3, $4) RETURNING *;",
       [firstName, lastName, student_login, password]
     );
-    console.log(response);
     return new User(response.rows[0]);
   }
 }
