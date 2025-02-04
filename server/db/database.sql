@@ -85,7 +85,7 @@ INSERT INTO odd_one_out (color, animal, country, food_drink, relations) VALUES
 ('Amarillo', 'Tortuga', 'Escocia', 'Leche', 'Abuela'),
 ('Verde', 'Oso', 'Estados Unidos de América', 'Ensalada', 'Abuelo');
 
-INSERT INTO questions (question, english, fool_1, fool_2, fool_3) VALUES
+INSERT INTO spanish_easy (question, english, fool_1, fool_2, fool_3) VALUES
 ('Hola.', 'Hello.', 'Goodbye.', 'Please.', 'Yes.'),
 ('¿Cómo estás?', 'How are you?', 'What is your name?', 'Where are you?', 'How old are you?'),
 ('Gracias.', 'Thank you.', 'Please.', 'You''re welcome.', 'Good morning.'),
