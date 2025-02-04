@@ -14,7 +14,7 @@ class User {
     if (response.rows.length === 0) {
       throw new Error("No students found!");
     }
-    // return response.rows[0]; // Return the raw rows instead of mapping
+
     return response.rows;
   }
 
@@ -42,10 +42,12 @@ class User {
 
   static async create(data) {
     const { firstName, lastName, student_login, password } = data;
+
     const response = await db.query(
       "INSERT INTO students (firstName, lastName, student_login, password) VALUES ($1, $2, $3, $4) RETURNING *;",
       [firstName, lastName, student_login, password]
     );
+
     return new User(response.rows[0]);
   }
 }

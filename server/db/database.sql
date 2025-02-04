@@ -6,8 +6,8 @@ DROP TABLE IF EXISTS spanish_translate;
 
 CREATE TABLE students (
     student_id INT GENERATED ALWAYS AS IDENTITY,
-    firstName VARCHAR(50) NOT NULL,
-    lastName VARCHAR(50) NOT NULL,
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL,
     student_login VARCHAR(50) UNIQUE NOT NULL,
     password CHAR(60) NOT NULL,
     PRIMARY KEY (student_id)

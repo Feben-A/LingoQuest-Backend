@@ -3,15 +3,6 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 
-const index = async (req, res) => {
-  try {
-    const response = await User.getAllStudents();
-    res.status(200).json(response);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
 async function register(req, res) {
   try {
     const data = req.body;
