@@ -3,7 +3,7 @@ const userController = require("../controllers/users");
 
 const userRouter = Router();
 
-userRouter.get("/students/", userController.index);
-userRouter.post("/register/", userController.register);
+userRouter.get("/login", userController.login);
+userRouter.post("/register", userController.register);
 
 module.exports = userRouter;
