@@ -9,6 +9,15 @@ class User {
       (this.password = password);
   }
 
+  static async getAllStudents() {
+    const response = await db.query("SELECT * FROM students;");
+    if (response.rows.length === 0) {
+      throw new Error("No students found!");
+    }
+    // return response.rows[0]; // Return the raw rows instead of mapping
+    return response.rows;
+  }
+
   static async getOneById(id) {
     const response = await db.query(
       "SELECT * FROM students WHERE student_id = $1;",
@@ -20,13 +29,24 @@ class User {
     return new User(response.rows[0]);
   }
 
+  static async getOneByStudentLogin(student_login) {
+    const response = await db.query(
+      "SELECT * FROM students WHERE student_login = $1;",
+      [student_login]
+    );
+    if (response.rows.length != 1) {
+      throw new Error("Student does not exist!");
+    }
+    return new User(response.rows[0]);
+  }
+
   static async create(data) {
     const { firstName, lastName, student_login, password } = data;
-    const response = db.query(
+    const response = await db.query(
       "INSERT INTO students (firstName, lastName, student_login, password) VALUES ($1, $2, $3, $4) RETURNING *;",
       [firstName, lastName, student_login, password]
     );
-    return response.rows[0];
+    return new User(response.rows[0]);
   }
 }
 

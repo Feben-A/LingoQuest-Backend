@@ -6,7 +6,7 @@ const userRouter = require("./routers/user");
 
 //Middleware
 app.use(cors());
-app.use(express.json);
+app.use(express.json());
 app.use(logger);
 
 app.use("/users", userRouter);

@@ -3,6 +3,7 @@ const userController = require("../controllers/users");
 
 const userRouter = Router();
 
-userRouter.post("/", userController.register);
+userRouter.get("/students/", userController.index);
+userRouter.post("/register/", userController.register);
 
 module.exports = userRouter;
