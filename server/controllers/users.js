@@ -1,10 +1,20 @@
-const bcrypt = require("bcrypyt");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 
+const index = async (req, res) => {
+  try {
+    const response = await User.getAllStudents();
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 async function register(req, res) {
   try {
+    const data = req.body;
     // Generate a salt with a specific cost
     const salt = await bcrypt.genSalt(parseInt(process.env.BCRYPT_SALT_ROUNDS));
     // Hash the password
@@ -16,4 +26,43 @@ async function register(req, res) {
   }
 }
 
-module.exports = { register };
+async function login(req, res) {
+  const data = req.body;
+  try {
+    const user = await User.getOneByStudentLogin(data.student_login);
+    if (!user) {
+      throw new Error("No student with this id!");
+    }
+    const match = await bcrypt.compare(data.student_login, user.student_login);
+
+    if (match) {
+      const payload = { student_login: user.student_login };
+      const sendToken = (err, token) => {
+        if (err) {
+          throw new Error("Error in token generation");
+        }
+        res.status(200).json({
+          success: true,
+          token: token,
+        });
+      };
+
+      jwt.sign(
+        payload,
+        process.env.SECRET_TOKEN,
+        { expiresIn: 3600 },
+        sendToken
+      );
+    } else {
+      throw new Error("User could not be authenticated");
+    }
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
+}
+
+module.exports = {
+  register,
+  login,
+  index,
+};
