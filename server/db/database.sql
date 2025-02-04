@@ -1,6 +1,7 @@
-DROP TABLE IF EXISTS marks;
 DROP TABLE IF EXISTS students;
 DROP TABLE IF EXISTS subjects;
+DROP TABLE IF EXISTS marks;
+DROP TABLE IF EXISTS odd_one_out;
 
 CREATE TABLE students (
     student_id INT GENERATED ALWAYS AS IDENTITY,
@@ -29,6 +30,16 @@ CREATE TABLE marks (
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE
 );
 
+CREATE TABLE odd_one_out (
+    categories_id INT GENERATED ALWAYS AS IDENTITY,
+    color VARCHAR(25) NOT NULL,
+    animal VARCHAR(25) NOT NULL,
+    country VARCHAR(25) NOT NULL,
+    food_drink VARCHAR(25),
+    relations VARCHAR(25),
+    PRIMARY KEY (categories_id)
+);
+
 INSERT INTO students (firstName, lastName, student_login, password) VALUES
 ('Emily', 'Clark', 'emily_clark01', 'securepass1'),
 ('Liam', 'Miller', 'liam_miller22', 'securepass2'),
@@ -51,3 +62,13 @@ INSERT INTO marks (student_id, subject_id, marks_obtained, total_marks) VALUES
 (3, 1, 78, 100), -- Sophia in Mathematics
 (4, 3, 84, 100), -- James in Physics
 (4, 2, 90, 100); -- James in English Literature
+
+INSERT INTO odd_one_out (color, animal, country, food_drink, relations) VALUES
+('Rosa', 'Perro', 'Francia', 'Hamburguesa', 'Madre'),
+('Negro', 'Gato', 'Inglaterra', 'Papas fritas', 'Padre'),
+('Marrón', 'Elefante', 'Italia', 'Chocolate', 'Hermano'),
+('Blanco', 'Oveja', 'Alemania', 'Pizza', 'Primo/Prima'),
+('Gris', 'Tigre', 'España', 'Pollo', 'Tía'),
+('Púrpura', 'Pez', 'Grecia', 'Galleta', 'Tío'),
+('Amarillo', 'Tortuga', 'Escocia', 'Leche', 'Abuela'),
+('Verde', 'Oso', 'Estados Unidos de América', 'Ensalada', 'Abuelo');
