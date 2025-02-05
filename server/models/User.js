@@ -29,7 +29,13 @@ class User {
   //   return new User(response.rows[0]);
   // }
 
-  static async 
+  static async marks(student_id) {
+    const response = await db.query(
+      "INSERT INTO marks (student_id, total_marks) VALUES ($1, $2) RETURNING *;",
+      [student_id, 0]
+    );
+    return response.rows[0];
+  }
 
   static async create(data) {
     const { firstName, lastName, student_login, password } = data;
@@ -38,6 +44,11 @@ class User {
       "INSERT INTO students (firstName, lastName, student_login, password) VALUES ($1, $2, $3, $4) RETURNING *;",
       [firstName, lastName, student_login, password]
     );
+
+    const studentId = response.rows[0].student_id;
+
+    // Ensure marks are assigned properly
+    await this.marks(studentId);
 
     return new User(response.rows[0]);
   }
