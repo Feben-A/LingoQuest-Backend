@@ -24,9 +24,6 @@ describe('Integration Tests for Spanish Translate and Users Endpoints', () => {
     api.close(done);
   });
 
-  /******************************************
-   * Tests for the Translate Endpoint
-   ******************************************/
   describe('GET /spanish/games/translate/:level', () => {
     it('should return 200 and an array of questions for a valid level', async () => {
       const level = 'easy';
@@ -52,9 +49,6 @@ describe('Integration Tests for Spanish Translate and Users Endpoints', () => {
     });
   });
 
-  /******************************************
-   * Tests for the Users Endpoints
-   ******************************************/
   describe('GET /users', () => {
     it('should return 200 and an array of students', async () => {
       const response = await request(api).get('/users');
