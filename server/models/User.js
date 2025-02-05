@@ -9,24 +9,32 @@ class User {
       (this.password = password);
   }
 
-  static async getAllStudents() {
-    const response = await db.query("SELECT * FROM students;");
-    if (response.rows.length === 0) {
-      throw new Error("No students found!");
-    }
+  // static async getAllStudents() {
+  //   const response = await db.query("SELECT * FROM students;");
+  //   if (response.rows.length === 0) {
+  //     throw new Error("No students found!");
+  //   }
 
-    return response.rows;
-  }
+  //   return response.rows;
+  // }
 
-  static async getOneByStudentLogin(student_login) {
+  // static async getOneByStudentLogin(student_login) {
+  //   const response = await db.query(
+  //     "SELECT * FROM students WHERE student_login = $1;",
+  //     [student_login]
+  //   );
+  //   if (response.rows.length != 1) {
+  //     throw new Error("Student does not exist!");
+  //   }
+  //   return new User(response.rows[0]);
+  // }
+
+  static async marks(student_id) {
     const response = await db.query(
-      "SELECT * FROM students WHERE student_login = $1;",
-      [student_login]
+      "INSERT INTO marks (student_id, total_marks) VALUES ($1, $2) RETURNING *;",
+      [student_id, 0]
     );
-    if (response.rows.length != 1) {
-      throw new Error("Student does not exist!");
-    }
-    return new User(response.rows[0]);
+    return response.rows[0];
   }
 
   static async create(data) {
@@ -36,6 +44,11 @@ class User {
       "INSERT INTO students (firstName, lastName, student_login, password) VALUES ($1, $2, $3, $4) RETURNING *;",
       [firstName, lastName, student_login, password]
     );
+
+    const studentId = response.rows[0].student_id;
+
+    // Ensure marks are assigned properly
+    await this.marks(studentId);
 
     return new User(response.rows[0]);
   }
