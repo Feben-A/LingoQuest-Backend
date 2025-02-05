@@ -35,7 +35,7 @@ describe("Translate", () => {
       expect(questions[0]).toHaveProperty("question", "¿Cómo estás?");
       expect(questions[0]).toHaveProperty("english", "How are you?");
       expect(db.query).toHaveBeenCalledWith(
-        "SELECT * FROM spanish_translate WHERE level = $1 ORDER BY RANDOM() LIMIT 10;;",
+        "SELECT * FROM spanish_translate WHERE level = $1 ORDER BY RANDOM() LIMIT 10;",
         [1]
       );
     });
@@ -45,7 +45,7 @@ describe("Translate", () => {
       jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [] });
 
       // Act & Assert
-      await expect(Translate.getQuestions(5)).rejects.toThrow("No questions found for level: 5");
+      await expect(Translate.getQuestions(10)).rejects.toThrow("No questions found for level: 10");
     });
   });
 });

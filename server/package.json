@@ -6,7 +6,13 @@
     "test": "jest --watchAll --verbose --detectOpenHandles --runInBand", 
     "coverage": "jest --coverage",
     "dev": "nodemon index.js",
-    "setup-db": "node ./db/setup.js"
+    "setup-db": "node ./db/setup.js",
+    "setup-test-db": "NODE_ENV=test node ./db/setup.js"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "./__tests__/integration/config.js"
+    ]
   },
   "keywords": [],
   "author": "",

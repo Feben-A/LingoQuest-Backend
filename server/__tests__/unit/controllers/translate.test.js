@@ -38,14 +38,14 @@ describe("Translate Controller", () => {
           fool_3: "How old are you?",
         },
       ];
-      const mockReq = { params: { level: "1" } };
+      const mockReq = { params: { level: "Easy" } };
       jest.spyOn(Translate, "getQuestions").mockResolvedValue(mockQuestions);
 
       // Act
       await translateController.show(mockReq, mockRes);
 
       // Assert
-      expect(Translate.getQuestions).toHaveBeenCalledWith("1");
+      expect(Translate.getQuestions).toHaveBeenCalledWith("Easy");
       expect(mockStatus).toHaveBeenCalledWith(200);
       expect(mockJson).toHaveBeenCalledWith(mockQuestions);
     });
