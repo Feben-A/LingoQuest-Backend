@@ -52,16 +52,16 @@ describe("Translate Controller", () => {
 
     it("should return an error when no questions are found", async () => {
       // Arrange
-      const mockReq = { params: { level: "99" } };
-      jest.spyOn(Translate, "getQuestions").mockRejectedValue(new Error("No questions found for level: 99"));
+      const mockReq = { params: { level: "Easy" } };
+      jest.spyOn(Translate, "getQuestions").mockRejectedValue(new Error("No questions found for level: Easy"));
 
       // Act
       await translateController.show(mockReq, mockRes);
 
       // Assert
-      expect(Translate.getQuestions).toHaveBeenCalledWith("99");
+      expect(Translate.getQuestions).toHaveBeenCalledWith("Easy");
       expect(mockStatus).toHaveBeenCalledWith(404);
-      expect(mockJson).toHaveBeenCalledWith({ error: "No questions found for level: 99" });
+      expect(mockJson).toHaveBeenCalledWith({ error: "No questions found for level: Easy" });
     });
   });
 });
