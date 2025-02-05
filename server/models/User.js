@@ -27,7 +27,6 @@ class User {
 
     const studentId = response.rows[0].student_id;
 
-    // Ensure marks are assigned properly
     await this.marks(studentId);
 
     return new User(response.rows[0]);

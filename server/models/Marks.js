@@ -24,8 +24,9 @@ class Marks {
     return response.rows;
   }
 
-  static async updateMarks(data) {
-    const response = await db.query();
+  async updateMarks(data) {
+    console.log(this.data);
+    // const response = await db.query();
   }
 }
 

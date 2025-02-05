@@ -38,7 +38,7 @@ async function login(req, res) {
 
     if (match) {
       const payload = {
-        student_login: user.student_login,
+        student_id: user.student_id,
       };
       console.log("signing jwt");
       const token = jwt.sign(payload, process.env.SECRET_TOKEN, {

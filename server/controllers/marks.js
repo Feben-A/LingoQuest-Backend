@@ -10,9 +10,14 @@ const showLeaderboard = async (req, res) => {
   }
 };
 
-const updateMarks = async (req, res) => {
+const update = async (req, res) => {
   const student_id = req.student_id;
-  const currentMark = await Marks.getMarkById;
+  try {
+    const currentMark = await Marks.getMarkById(student_id);
+    const response = await currentMark.updateMarks();
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 };
 
-module.exports = { showLeaderboard };
+module.exports = { showLeaderboard, update };
