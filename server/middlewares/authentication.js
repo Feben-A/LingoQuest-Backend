@@ -12,6 +12,7 @@ const authentication = (req, res, next) => {
       } else {
         console.log(data);
         req.student_login = data;
+        req.student_id = data;
         next();
       }
     });
