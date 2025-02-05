@@ -10,6 +10,9 @@ const showLeaderboard = async (req, res) => {
   }
 };
 
-const updateMarks = async (req, res) => {};
+const updateMarks = async (req, res) => {
+  const student_id = req.student_id;
+  const currentMark = await Marks.getMarkById;
+};
 
 module.exports = { showLeaderboard };

@@ -11,12 +11,11 @@ const authentication = (req, res, next) => {
         res.status(403).json({ err: "No valid token" });
       } else {
         console.log(data);
-        req.student_login = data;
         req.student_id = data;
         next();
       }
-    })
+    });
   }
-}
+};
 
 module.exports = authentication;

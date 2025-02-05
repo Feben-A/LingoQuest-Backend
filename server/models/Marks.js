@@ -24,8 +24,8 @@ class Marks {
     return response.rows;
   }
 
-  static async updateMarks(marks) {
-    const response = await db.query("UPDATE marks SET total_marks");
+  static async updateMarks(data) {
+    const response = await db.query();
   }
 }
 

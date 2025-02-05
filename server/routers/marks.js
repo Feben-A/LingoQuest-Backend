@@ -4,6 +4,6 @@ const authentication = require("../middlewares/authentication");
 const marksControllers = require("../controllers/marks");
 
 marksRouter.get("/leaders", marksControllers.showLeaderboard);
-// marksRouter.patch("/:score", authentication, marksControllers.updateMarks);
+marksRouter.patch("/:score", authentication, marksControllers.updateMarks);
 
 module.exports = marksRouter;
