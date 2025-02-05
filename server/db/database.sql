@@ -23,12 +23,9 @@ CREATE TABLE subjects (
 CREATE TABLE marks (
     mark_id INT GENERATED ALWAYS AS IDENTITY,
     student_id INT NOT NULL,
-    subject_id INT NOT NULL,
-    marks_obtained INT NOT NULL,
     total_marks INT NOT NULL,
     PRIMARY KEY (mark_id),
     FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE,
-    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE
 );
 
 CREATE TABLE odd_one_out (

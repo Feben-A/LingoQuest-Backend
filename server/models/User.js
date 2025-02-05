@@ -9,25 +9,27 @@ class User {
       (this.password = password);
   }
 
-  static async getAllStudents() {
-    const response = await db.query("SELECT * FROM students;");
-    if (response.rows.length === 0) {
-      throw new Error("No students found!");
-    }
+  // static async getAllStudents() {
+  //   const response = await db.query("SELECT * FROM students;");
+  //   if (response.rows.length === 0) {
+  //     throw new Error("No students found!");
+  //   }
 
-    return response.rows;
-  }
+  //   return response.rows;
+  // }
 
-  static async getOneByStudentLogin(student_login) {
-    const response = await db.query(
-      "SELECT * FROM students WHERE student_login = $1;",
-      [student_login]
-    );
-    if (response.rows.length != 1) {
-      throw new Error("Student does not exist!");
-    }
-    return new User(response.rows[0]);
-  }
+  // static async getOneByStudentLogin(student_login) {
+  //   const response = await db.query(
+  //     "SELECT * FROM students WHERE student_login = $1;",
+  //     [student_login]
+  //   );
+  //   if (response.rows.length != 1) {
+  //     throw new Error("Student does not exist!");
+  //   }
+  //   return new User(response.rows[0]);
+  // }
+
+  static async 
 
   static async create(data) {
     const { firstName, lastName, student_login, password } = data;
