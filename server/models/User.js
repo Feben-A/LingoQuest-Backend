@@ -18,17 +18,6 @@ class User {
     return response.rows;
   }
 
-  static async getOneById(id) {
-    const response = await db.query(
-      "SELECT * FROM students WHERE student_id = $1;",
-      [id]
-    );
-    if (response.rows.length != 1) {
-      throw new Error("Student does not exist!");
-    }
-    return new User(response.rows[0]);
-  }
-
   static async getOneByStudentLogin(student_login) {
     const response = await db.query(
       "SELECT * FROM students WHERE student_login = $1;",

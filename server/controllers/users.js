@@ -3,6 +3,16 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 
+async function show(req, res) {
+  try {
+    const student_login = req.user.student_login;
+    const response = await User.getOneByStudentLogin(student_login);
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(404).json({ err: err.message });
+  }
+}
+
 async function register(req, res) {
   try {
     const data = req.body;
@@ -22,28 +32,22 @@ async function login(req, res) {
   try {
     const user = await User.getOneByStudentLogin(data.student_login);
     if (!user) {
-      throw new Error("No student with this id!");
+      throw new Error("No student with this student id.");
     }
-    const match = await bcrypt.compare(data.student_login, user.student_login);
+    const match = await bcrypt.compare(data.password, user.password);
 
     if (match) {
-      const payload = { student_login: user.student_login };
-      const sendToken = (err, token) => {
-        if (err) {
-          throw new Error("Error in token generation");
-        }
-        res.status(200).json({
-          success: true,
-          token: token,
-        });
+      const payload = {
+        student_login: user.student_login,
       };
-
-      jwt.sign(
-        payload,
-        process.env.SECRET_TOKEN,
-        { expiresIn: 3600 },
-        sendToken
-      );
+      console.log("signing jwt");
+      const token = jwt.sign(payload, process.env.SECRET_TOKEN, {
+        expiresIn: 3600,
+      });
+      res.status(200).json({
+        success: true,
+        token: token,
+      });
     } else {
       throw new Error("User could not be authenticated");
     }
@@ -55,5 +59,5 @@ async function login(req, res) {
 module.exports = {
   register,
   login,
-  index,
+  show,
 };
