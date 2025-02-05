@@ -14,8 +14,8 @@ const authentication = (req, res, next) => {
         req.student_login = data;
         next();
       }
-    });
+    })
   }
-};
+}
 
 module.exports = authentication;
