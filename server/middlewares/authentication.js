@@ -10,8 +10,7 @@ const authentication = (req, res, next) => {
       if (err) {
         res.status(403).json({ err: "No valid token" });
       } else {
-        console.log(data);
-        req.student_id = data;
+        req.student_id = data.student_id;
         next();
       }
     });

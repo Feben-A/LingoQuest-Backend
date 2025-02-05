@@ -1,5 +1,4 @@
 const Marks = require("../models/Marks");
-const User = require("../models/User");
 
 const showLeaderboard = async (req, res) => {
   try {
@@ -12,9 +11,12 @@ const showLeaderboard = async (req, res) => {
 
 const update = async (req, res) => {
   const student_id = req.student_id;
+  const newMarks = req.params.score;
   try {
     const currentMark = await Marks.getMarkById(student_id);
-    const response = await currentMark.updateMarks();
+    console.log(currentMark);
+    const response = await currentMark.updateMarks(newMarks);
+    res.status(200).json(response);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

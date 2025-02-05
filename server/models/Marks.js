@@ -24,9 +24,16 @@ class Marks {
     return response.rows;
   }
 
-  async updateMarks(data) {
-    console.log(this.data);
-    // const response = await db.query();
+  async updateMarks(newMark) {
+    const response = await db.query(
+      "UPDATE marks SET total_marks = total_marks + $1 WHERE student_id = $2 RETURNING *;",
+      [newMark, this.student_id]
+    );
+    if (response.rows.length === 0) {
+      throw new Error("Unable to update marks.");
+    }
+
+    return response.rows[0];
   }
 }
 
