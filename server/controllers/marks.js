@@ -11,7 +11,7 @@ const showLeaderboard = async (req, res) => {
 
 const update = async (req, res) => {
   const student_id = req.student_id;
-  const newMarks = req.params.score;
+  const newMarks = req.body.score;
   try {
     const currentMark = await Marks.getMarkById(student_id);
     console.log(currentMark);
