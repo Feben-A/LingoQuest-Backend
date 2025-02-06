@@ -1,12 +1,12 @@
 const db = require("../../../db/connect");
 const Marks = require("../../../models/Marks");
 
-describe("Marks", () => {
+describe("Marks Model", () => {
     beforeEach(() => jest.clearAllMocks());
     afterAll(() => jest.resetAllMocks());
 
     describe("getMarkById", () => {
-        it("resolves with marks on successful db query", async () => {
+        it("should return a Marks instance when a valid student_id is provided", async () => {
             // Arrange
             const mockMarks = { marks_id: 1, student_id: 101, total_marks: 85 };
             jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [mockMarks] });
@@ -18,10 +18,13 @@ describe("Marks", () => {
             expect(result).toBeInstanceOf(Marks);
             expect(result.student_id).toBe(101);
             expect(result.total_marks).toBe(85);
-            expect(db.query).toHaveBeenCalledWith("SELECT * FROM marks WHERE student_id = $1;", [101]);
+            expect(db.query).toHaveBeenCalledWith(
+                "SELECT * FROM marks WHERE student_id = $1;",
+                [101]
+            );
         });
 
-        it("should throw an Error when marks are not found", async () => {
+        it("should return an error when no marks are found", async () => {
             // Arrange
             jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [] });
 
@@ -31,7 +34,7 @@ describe("Marks", () => {
     });
 
     describe("getLeaderBoard", () => {
-        it("resolves with top 3 students based on total marks", async () => {
+        it("should return an array of top 3 students with highest marks", async () => {
             // Arrange
             const mockLeaderboard = [
                 { firstName: "Alice", lastName: "Brown", total_marks: 95 },
@@ -44,19 +47,33 @@ describe("Marks", () => {
             const result = await Marks.getLeaderBoard();
 
             // Assert
-            expect(result).toHaveLength(3);
+            expect(Array.isArray(result)).toBe(true);
+            expect(result.length).toBe(3);
             expect(result[0].firstName).toBe("Alice");
             expect(db.query).toHaveBeenCalledWith(
                 "SELECT s.firstName, s.lastName, m.total_marks FROM students AS s JOIN marks AS m ON (s.student_id = m.student_id) ORDER BY total_marks DESC LIMIT 3"
             );
         });
+
+        it("should return an empty array when no students have marks", async () => {
+            // Arrange
+            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [] });
+
+            // Act
+            const result = await Marks.getLeaderBoard();
+
+            // Assert
+            expect(Array.isArray(result)).toBe(true);
+            expect(result.length).toBe(0);
+        });
     });
 
     describe("updateMarks", () => {
-        it("updates the marks and returns the updated record", async () => {
+        it("should update the total marks and return the updated record", async () => {
             // Arrange
             const mockUpdatedMarks = { marks_id: 1, student_id: 101, total_marks: 95 };
             const markInstance = new Marks({ marks_id: 1, student_id: 101, total_marks: 85 });
+
             jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [mockUpdatedMarks] });
 
             // Act
@@ -73,6 +90,7 @@ describe("Marks", () => {
         it("should throw an Error when update fails", async () => {
             // Arrange
             const markInstance = new Marks({ marks_id: 1, student_id: 101, total_marks: 85 });
+
             jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [] });
 
             // Act & Assert

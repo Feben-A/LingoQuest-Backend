@@ -1,16 +1,15 @@
 const usersController = require("../../../controllers/users");
 const User = require("../../../models/User");
 
-// Mock response methods
+// Mocking response methods
 const mockSend = jest.fn();
 const mockJson = jest.fn();
 const mockEnd = jest.fn();
 
-// we are mocking .send(), .json() and .end()
 const mockStatus = jest.fn(() => ({
-    send: mockSend, 
-    json: mockJson, 
-    end: mockEnd 
+  send: mockSend,
+  json: mockJson,
+  end: mockEnd,
 }));
 
 const mockRes = { status: mockStatus };
@@ -19,67 +18,95 @@ describe("Users Controller", () => {
   beforeEach(() => jest.clearAllMocks());
   afterAll(() => jest.resetAllMocks());
 
-  describe("index", () => {
-    it("should return users with a status code 200", async () => {
-      // Arrange
-      const testUsers = [
-        { student_id: 1, firstName: "Ben", lastName: "Eren", student_login: "beren", password: "beren123" },
-        { student_id: 2, firstName: "Abdul", lastName: "Mirza", student_login: "amirza", password: "amirza123" },
-      ];
-      jest.spyOn(User, "getAllStudents").mockResolvedValue(testUsers);
+  describe("show", () => {
+    let testUser, mockReq;
 
-      // Act
-      await usersController.index(null, mockRes);
-
-      // Assert
-      expect(User.getAllStudents).toHaveBeenCalledTimes(1);
-      expect(mockStatus).toHaveBeenCalledWith(200);
-      expect(mockJson).toHaveBeenCalledWith(testUsers);
+    beforeEach(() => {
+      testUser = {
+        student_id: 1,
+        firstName: "John",
+        lastName: "Doe",
+        student_login: "johndoe",
+      };
+      mockReq = { user: { student_login: "johndoe" } };
     });
 
-    it("should return an error upon failure", async () => {
-      // Arrange
-      jest.spyOn(User, "getAllStudents").mockRejectedValue(new Error("Database error"));
+    it("should return user details with a 200 status code", async () => {
+      jest.spyOn(User, "getOneByStudentLogin").mockResolvedValue(new User(testUser));
 
-      // Act
-      await usersController.index(null, mockRes);
+      await usersController.show(mockReq, mockRes);
 
-      // Assert
-      expect(User.getAllStudents).toHaveBeenCalledTimes(1);
-      expect(mockStatus).toHaveBeenCalledWith(500);
-      expect(mockJson).toHaveBeenCalledWith({ error: "Database error" });
+      expect(User.getOneByStudentLogin).toHaveBeenCalledWith("johndoe");
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith(new User(testUser));
+    });
+
+    it("should return an error if the user is not found", async () => {
+      jest.spyOn(User, "getOneByStudentLogin").mockRejectedValue(new Error("User not found"));
+
+      await usersController.show(mockReq, mockRes);
+
+      expect(User.getOneByStudentLogin).toHaveBeenCalledWith("johndoe");
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({ err: "User not found" });
     });
   });
 
   describe("register", () => {
     it("should successfully create a new user and return it with a 201 status code", async () => {
-      // Arrange
-      const testUser = { firstName: "Abdul", lastName: "Mirza", student_login: "amirza", password: "amirza123" };
-      const mockReq = { body: testUser };
+      let testUserData = {
+        firstName: "Alice",
+        lastName: "Smith",
+        student_login: "alicesmith",
+      };
 
-      jest.spyOn(User, "create").mockResolvedValue(testUser);
+      let mockCreatedUser = { ...testUserData, student_id: 2 };
 
-      // Act
+      jest.spyOn(User, "create").mockResolvedValue(new User(mockCreatedUser));
+
+      const mockReq = { body: testUserData };
+
       await usersController.register(mockReq, mockRes);
 
-      // Assert
-      expect(User.create).toHaveBeenCalledWith(testUser);
+      expect(User.create).toHaveBeenCalledWith(testUserData);
       expect(mockStatus).toHaveBeenCalledWith(201);
-      expect(mockSend).toHaveBeenCalledWith(testUser);
+      expect(mockSend).toHaveBeenCalledWith(new User(mockCreatedUser));
     });
 
     it("should return an error if registration fails", async () => {
-      // Arrange
-      const mockReq = { body: { firstName: "Natasha" } };
-      jest.spyOn(User, "create").mockRejectedValue(new Error("Invalid data"));
+      const testUserData = {
+        firstName: "Alice",
+        lastName: "Smith",
+        student_login: "alicesmith",
+      };
 
-      // Act
+      jest.spyOn(User, "create").mockRejectedValue(new Error("Registration failed"));
+
+      const mockReq = { body: testUserData };
+
       await usersController.register(mockReq, mockRes);
 
-      // Assert
       expect(User.create).toHaveBeenCalled();
       expect(mockStatus).toHaveBeenCalledWith(400);
-      expect(mockJson).toHaveBeenCalledWith({ error: "Invalid data" });
+      expect(mockJson).toHaveBeenCalledWith({ error: "Registration failed" });
+    });
+  });
+
+  describe("login", () => {
+    it("should return an error if user does not exist", async () => {
+      let testCredentials = {
+        student_login: "nonexistent",
+      };
+
+      jest.spyOn(User, "getOneByStudentLogin").mockRejectedValue(new Error("No student with this student id."));
+
+      const mockReq = { body: testCredentials };
+
+      await usersController.login(mockReq, mockRes);
+
+      expect(User.getOneByStudentLogin).toHaveBeenCalledWith("nonexistent");
+      expect(mockStatus).toHaveBeenCalledWith(401);
+      expect(mockJson).toHaveBeenCalledWith({ error: "No student with this student id." });
     });
   });
 });

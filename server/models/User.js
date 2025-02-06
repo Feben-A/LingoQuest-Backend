@@ -36,6 +36,10 @@ class User {
       [firstName, lastName, student_login, password]
     );
 
+    if (response.rows.length !== 1) {
+      throw new Error("Registration failed")
+    }
+
     const studentId = response.rows[0].student_id;
 
     await this.marks(studentId);

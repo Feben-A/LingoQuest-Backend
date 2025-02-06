@@ -1,64 +1,87 @@
-const request = require("supertest");
-const { resetTestDB } = require("./config");
-const app = require("../../app");
+const request = require('supertest');
+const app = require('../../app');
+const { resetTestDB } = require('./config');
 
-describe("API Integration Tests", () => {
+describe('API Integration Tests', () => {
   let api;
-
-  beforeAll(() => {
-    api = app.listen(4000, () => {
-      console.log("Test server running on port 4000");
-    });
-  });
 
   beforeEach(async () => {
     await resetTestDB();
   });
 
+  beforeAll(() => {
+    api = app.listen(4000, () => {
+      console.log('Test server running on port 4000');
+    });
+  });
+
   afterAll((done) => {
-    console.log("Gracefully closing server");
+    console.log('Gracefully closing server');
     api.close(done);
   });
 
-  describe("Users API", () => {
-    it("should register a new user", async () => {
+  // Users API Tests
+  describe('Users API', () => {
+    it('should register a new user', async () => {
       const newUser = {
-        firstName: "John",
-        lastName: "Doe",
-        student_login: "johndoe",
-        password: "secret123",
+        firstName: 'Alice',
+        lastName: 'Smith',
+        student_login: 'alicesmith',
+        password: 'securepassword'
       };
 
-      const res = await request(api).post("/users/register").send(newUser);
+      const res = await request(api).post('/users/register').send(newUser);
 
       expect(res.status).toBe(201);
-      expect(res.body).toHaveProperty("student_id");
+      expect(res.body).toHaveProperty('student_id');
     });
 
-    it("should login a user", async () => {
-      const loginData = { student_login: "johndoe", password: "secret123" };
-      const res = await request(api).post("/users/login").send(loginData);
+    it('should login a user', async () => {
+      const loginData = {
+        student_login: 'alicesmith',
+        password: 'securepassword'
+      };
+
+      const res = await request(api).post('/users/login').send(loginData);
 
       expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty("token");
+      expect(res.body).toHaveProperty('token');
     });
   });
 
-  describe("Marks API", () => {
-    it("should return leaderboard", async () => {
-      const res = await request(api).get("/student/marks/leaders");
+  // Marks API Tests
+  describe('Marks API', () => {
+    it('should return leaderboard', async () => {
+      const res = await request(api).get('/student/marks/leaders');
 
       expect(res.status).toBe(200);
       expect(Array.isArray(res.body)).toBe(true);
     });
+
+    it('should update marks and return updated score', async () => {
+      const res = await request(api)
+        .patch('/student/marks/score')
+        .send({ student_id: 1, score: 10 });
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('total_marks');
+    });
   });
 
-  describe("Translate API", () => {
-    it("should return translation questions", async () => {
-      const res = await request(api).get("/spanish/games/translate/easy");
+  // Translate API Tests
+  describe('Translate API', () => {
+    it('should return translation questions', async () => {
+      const res = await request(api).get('/spanish/games/translate/easy');
 
       expect(res.status).toBe(200);
       expect(Array.isArray(res.body)).toBe(true);
+    });
+
+    it('should return 404 if no translation questions found', async () => {
+      const res = await request(api).get('/spanish/games/translate/hard');
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty('error');
     });
   });
 });
