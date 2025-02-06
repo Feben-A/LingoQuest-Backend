@@ -47,5 +47,13 @@ describe("Translate", () => {
       // Act & Assert
       await expect(Translate.getQuestions(10)).rejects.toThrow("No questions found for level: 10");
     });
+
+    it("should throw an Error when level is not a number", async () => {
+      await expect(Translate.getQuestions("abc")).rejects.toThrow();
+    });
+
+    it("should throw an Error when level is not provided", async () => {
+      await expect(Translate.getQuestions()).rejects.toThrow();
+    });
   });
 });

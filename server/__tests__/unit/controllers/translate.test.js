@@ -6,7 +6,6 @@ const mockSend = jest.fn();
 const mockJson = jest.fn();
 const mockEnd = jest.fn();
 
-// we are mocking .send(), .json() and .end()
 const mockStatus = jest.fn(() => ({ 
     send: mockSend, 
     json: mockJson, 
