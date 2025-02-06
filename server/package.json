@@ -6,6 +6,7 @@
     "test": "jest --watchAll --verbose --detectOpenHandles --runInBand", 
     "coverage": "jest --coverage",
     "dev": "nodemon index.js",
+    "start": "node index.js",
     "setup-db": "node ./db/setup.js",
     "setup-test-db": "NODE_ENV=test node ./db/setup.js"
   },
