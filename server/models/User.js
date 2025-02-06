@@ -9,6 +9,17 @@ class User {
       (this.password = password);
   }
 
+  static async getOneByStudentLogin(student_login) {
+    const response = await db.query(
+      "SELECT * FROM students WHERE student_login = $1;",
+      [student_login]
+    );
+    if (response.rows.length != 1) {
+      throw new Error("Student does not exist!");
+    }
+    return new User(response.rows[0]);
+  }
+
   static async marks(student_id) {
     const response = await db.query(
       "INSERT INTO marks (student_id, total_marks) VALUES ($1, $2) RETURNING *;",
