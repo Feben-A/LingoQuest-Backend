@@ -11,7 +11,7 @@ class Translate {
 
   static async getQuestions(level) {
     const response = await db.query(
-      "SELECT * FROM spanish_translate WHERE level = $1 ORDER BY RANDOM() LIMIT 10;;",
+      "SELECT * FROM spanish_translate WHERE level = $1 ORDER BY RANDOM() LIMIT 10;",
       [level]
     );
     if (response.rows.length === 0) {

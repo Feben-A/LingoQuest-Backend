@@ -6,10 +6,10 @@ const mockSend = jest.fn();
 const mockJson = jest.fn();
 const mockEnd = jest.fn();
 
-const mockStatus = jest.fn(() => ({ 
-    send: mockSend, 
-    json: mockJson, 
-    end: mockEnd 
+const mockStatus = jest.fn(() => ({
+  send: mockSend,
+  json: mockJson,
+  end: mockEnd,
 }));
 
 const mockRes = { status: mockStatus };
@@ -39,7 +39,9 @@ describe("Marks Controller", () => {
 
     it("should return an error when leaderboard retrieval fails", async () => {
       // Arrange
-      jest.spyOn(Marks, "getLeaderBoard").mockRejectedValue(new Error("Failed to retrieve leaderboard"));
+      jest
+        .spyOn(Marks, "getLeaderBoard")
+        .mockRejectedValue(new Error("Failed to retrieve leaderboard"));
 
       // Act
       await marksController.showLeaderboard({}, mockRes);
@@ -47,15 +49,23 @@ describe("Marks Controller", () => {
       // Assert
       expect(Marks.getLeaderBoard).toHaveBeenCalled();
       expect(mockStatus).toHaveBeenCalledWith(404);
-      expect(mockJson).toHaveBeenCalledWith({ error: "Failed to retrieve leaderboard" });
+      expect(mockJson).toHaveBeenCalledWith({
+        error: "Failed to retrieve leaderboard",
+      });
     });
   });
 
   describe("update", () => {
     it("should update marks and return the updated record", async () => {
       // Arrange
-      const mockReq = { student_id: 1, params: { score: 10 } };
-      const mockMark = { student_id: 1, total_marks: 85, updateMarks: jest.fn().mockResolvedValue({ student_id: 1, total_marks: 95 }) };
+      const mockReq = { student_id: 1, body: { score: 10 } };
+      const mockMark = {
+        student_id: 1,
+        total_marks: 85,
+        updateMarks: jest
+          .fn()
+          .mockResolvedValue({ student_id: 1, total_marks: 95 }),
+      };
       jest.spyOn(Marks, "getMarkById").mockResolvedValue(mockMark);
 
       // Act
@@ -70,8 +80,10 @@ describe("Marks Controller", () => {
 
     it("should return an error when updating marks fails", async () => {
       // Arrange
-      const mockReq = { student_id: 1, params: { score: 10 } };
-      jest.spyOn(Marks, "getMarkById").mockRejectedValue(new Error("Failed to retrieve marks"));
+      const mockReq = { student_id: 1, body: { score: 10 } };
+      jest
+        .spyOn(Marks, "getMarkById")
+        .mockRejectedValue(new Error("Failed to retrieve marks"));
 
       // Act
       await marksController.update(mockReq, mockRes);
@@ -79,7 +91,9 @@ describe("Marks Controller", () => {
       // Assert
       expect(Marks.getMarkById).toHaveBeenCalledWith(1);
       expect(mockStatus).toHaveBeenCalledWith(400);
-      expect(mockJson).toHaveBeenCalledWith({ error: "Failed to retrieve marks" });
+      expect(mockJson).toHaveBeenCalledWith({
+        error: "Failed to retrieve marks",
+      });
     });
   });
 });
